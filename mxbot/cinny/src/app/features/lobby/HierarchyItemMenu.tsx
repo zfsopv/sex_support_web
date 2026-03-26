@@ -21,7 +21,6 @@ import { MSpaceChildContent, StateEvent } from '../../../types/matrix/room';
 import { AsyncStatus, useAsyncCallback } from '../../hooks/useAsyncCallback';
 import { UseStateProvider } from '../../components/UseStateProvider';
 import { LeaveSpacePrompt } from '../../components/leave-space-prompt';
-import { LeaveRoomPrompt } from '../../components/leave-room-prompt';
 import { stopPropagation } from '../../utils/keyboard';
 import { useOpenRoomSettings } from '../../state/hooks/roomSettings';
 import { useSpaceOptionally } from '../../hooks/useSpace';
@@ -284,39 +283,6 @@ export function HierarchyItemMenu({
                       disabled={!canInvite()}
                     />
                     <SettingsMenuItem item={item} requestClose={handleRequestClose} />
-                    <UseStateProvider initial={false}>
-                      {(promptLeave, setPromptLeave) => (
-                        <>
-                          <MenuItem
-                            onClick={() => setPromptLeave(true)}
-                            variant="Critical"
-                            fill="None"
-                            size="300"
-                            after={<Icon size="100" src={Icons.ArrowGoLeft} />}
-                            radii="300"
-                            aria-pressed={promptLeave}
-                          >
-                            <Text style={{ flexGrow: 1 }} as="span" size="T300" truncate>
-                              Leave
-                            </Text>
-                          </MenuItem>
-                          {promptLeave &&
-                            ('space' in item ? (
-                              <LeaveSpacePrompt
-                                roomId={item.roomId}
-                                onDone={handleRequestClose}
-                                onCancel={() => setPromptLeave(false)}
-                              />
-                            ) : (
-                              <LeaveRoomPrompt
-                                roomId={item.roomId}
-                                onDone={handleRequestClose}
-                                onCancel={() => setPromptLeave(false)}
-                              />
-                            ))}
-                        </>
-                      )}
-                    </UseStateProvider>
                   </Box>
                 )}
                 {(joined || canEditChild) && (

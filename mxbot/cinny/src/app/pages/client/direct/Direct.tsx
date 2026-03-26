@@ -3,7 +3,6 @@ import { useAtom, useAtomValue } from 'jotai';
 import {
   Avatar,
   Box,
-  Button,
   Icon,
   IconButton,
   Icons,
@@ -29,7 +28,7 @@ import {
   NavItem,
   NavItemContent,
 } from '../../../components/nav';
-import { getDirectCreatePath, getDirectRoomPath } from '../../pathUtils';
+import { getDirectRoomPath } from '../../pathUtils';
 import { getCanonicalAliasOrRoomId } from '../../../utils/matrix';
 import { useSelectedRoom } from '../../../hooks/router/useSelectedRoom';
 import { VirtualTile } from '../../../components/virtualizer';
@@ -50,7 +49,6 @@ import {
   getRoomNotificationMode,
   useRoomsNotificationPreferencesContext,
 } from '../../../hooks/useRoomsNotificationPreferences';
-import { useDirectCreateSelected } from '../../../hooks/router/useDirectSelected';
 
 type DirectMenuProps = {
   requestClose: () => void;
@@ -139,12 +137,10 @@ function DirectHeader() {
 }
 
 function DirectEmpty() {
-  const navigate = useNavigate();
-
   return (
     <NavEmptyCenter>
       <NavEmptyLayout
-        icon={<Icon size="600" src={Icons.Mention} />}
+        icon={<Icon size="600" src={Icons.Hash} />}
         title={
           <Text size="H5" align="Center">
             No Direct Messages
@@ -154,13 +150,6 @@ function DirectEmpty() {
           <Text size="T300" align="Center">
             You do not have any direct messages yet.
           </Text>
-        }
-        options={
-          <Button variant="Secondary" size="300" onClick={() => navigate(getDirectCreatePath())}>
-            <Text size="B300" truncate>
-              Direct Message
-            </Text>
-          </Button>
         }
       />
     </NavEmptyCenter>
@@ -176,8 +165,6 @@ export function Direct() {
   const notificationPreferences = useRoomsNotificationPreferencesContext();
   const roomToUnread = useAtomValue(roomToUnreadAtom);
   const navigate = useNavigate();
-
-  const createDirectSelected = useDirectCreateSelected();
 
   const selectedRoomId = useSelectedRoom();
   const noRoomToDisplay = directs.length === 0;
@@ -210,24 +197,6 @@ export function Direct() {
       ) : (
         <PageNavContent scrollRef={scrollRef}>
           <Box direction="Column" gap="300">
-            <NavCategory>
-              <NavItem variant="Background" radii="400" aria-selected={createDirectSelected}>
-                <NavButton onClick={() => navigate(getDirectCreatePath())}>
-                  <NavItemContent>
-                    <Box as="span" grow="Yes" alignItems="Center" gap="200">
-                      <Avatar size="200" radii="400">
-                        <Icon src={Icons.Plus} size="100" />
-                      </Avatar>
-                      <Box as="span" grow="Yes">
-                        <Text as="span" size="Inherit" truncate>
-                          Create Chat
-                        </Text>
-                      </Box>
-                    </Box>
-                  </NavItemContent>
-                </NavButton>
-              </NavItem>
-            </NavCategory>
             <NavCategory>
               <NavCategoryHeader>
                 <RoomNavCategoryButton
