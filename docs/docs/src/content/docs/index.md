@@ -1,7 +1,13 @@
 ---
 title: 技术支持BOT
-description: 主页.
+description: 主页
 template: doc
+head:
+  - tag: style
+    content: |
+      .content-panel:has(h1) {
+        display: none !important;
+      }
 ---
 
 <script>
@@ -23,7 +29,7 @@ template: doc
 <style>
   .iframe-wrapper {
     width: 100%;
-    height: 80vh;
+    height: 85vh;
   }
 
   .iframe-wrapper iframe {

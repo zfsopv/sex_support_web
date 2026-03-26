@@ -10,5 +10,4 @@ description: 鸣谢列表
 * [Starlight](https://starlight.astro.build) - 基于 Astro 构建的文档主题
 * [starlight-theme-nova](https://github.com/HiDeoo/starlight-theme-nova) - Starlight 的 Nova 主题变体
 * [matrix-js-sdk](https://github.com/matrix-org/matrix-js-sdk) - Matrix 的 JavaScript SDK，用于 Matrix 客户端开发
-* [Rust](https://www.rust-lang.org) - 系统编程语言，用于编写 matrix_auto_connect_bot
 * [Astrbot](https://github.com/astrbotdevs/astrbot) - AstrBot 是一个开源的一站式 Agentic 个人和群聊助手
