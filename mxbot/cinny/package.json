@@ -15,7 +15,10 @@
     "check:eslint": "eslint src/*",
     "check:prettier": "prettier --check .",
     "fix:prettier": "prettier --write .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy": "npm run build && wrangler pages deploy",
+    "deploy:preview": "npm run build && wrangler pages deploy --preview",
+    "wrangler:dev": "wrangler pages dev dist"
   },
   "keywords": [],
   "author": "Ajay Bura",
