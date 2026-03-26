@@ -1,0 +1,16 @@
+[package]
+name = "matrix_auto_connect_bot"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+matrix-sdk = { version = "0.16", default-features = false, features = ["anyhow", "native-tls"] }
+tokio = { version = "1", features = ["full"] }
+anyhow = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["json"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+url = "2.5"
+dotenv = "0.15"
