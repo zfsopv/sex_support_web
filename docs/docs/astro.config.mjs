@@ -1,0 +1,42 @@
+// @ts-check
+import { defineConfig } from 'astro/config';
+import starlight from '@astrojs/starlight';
+//import starlightThemeNova from 'starlight-theme-nova';
+
+// https://astro.build/config
+export default defineConfig({
+	server: {
+		host: '0.0.0.0',
+		port: 4321,
+	},
+	integrations: [
+		starlight({
+			title: '技术支持BOT',
+			customCss: [
+				'./src/styles/custom.css',
+			],
+			social: [{ icon: 'external', label: '官网', href: 'https://www.sophgo.com/' }],
+			// plugins: [
+			// 	starlightThemeNova(/* options */), 
+			// ],
+			sidebar: [
+				{
+					label: '技术支持BOT',
+					link: '/',
+				},
+				{
+					label: '常见问题',
+					autogenerate: { directory: 'all' },
+				},
+				{
+					label: 'SE7',
+					autogenerate: { directory: 'se7' },
+				},
+				{
+					label: 'SE9',
+					autogenerate: { directory: 'se9' },
+				},
+			],
+		}),
+	],
+});
