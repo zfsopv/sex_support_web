@@ -39,30 +39,3 @@ pnpm run build
 ```bash
 pnpm run deploy
 ```
-
-或使用 wrangler 直接部署：
-
-```bash
-wrangler pages deploy dist
-```
-
-首次部署时会要求输入项目名称和详细信息。
-
-## 自动部署脚本
-
-项目已配置自动部署脚本，运行以下命令即可完成构建和部署：
-
-```bash
-pnpm run deploy
-```
-
-## SEO 配置
-
-项目已配置禁止搜索引擎索引，通过 `public/robots.txt` 实现：
-
-```
-User-agent: *
-Disallow: /
-```
-
-如需启用搜索引擎索引，请删除或修改此文件。
