@@ -36,6 +36,10 @@ export default defineConfig({
 					label: 'SE9',
 					autogenerate: { directory: 'se9' },
 				},
+				{
+					label: '鸣谢列表',
+					autogenerate: { directory: 'thanks' },
+				},
 			],
 		}),
 	],
