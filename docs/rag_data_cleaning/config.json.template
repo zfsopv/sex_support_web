@@ -1,0 +1,5 @@
+{
+  "api_key": "your_openai_api_key_here",
+  "api_base": "https://api.openai.com/v1",
+  "model": "gpt-4"
+}
