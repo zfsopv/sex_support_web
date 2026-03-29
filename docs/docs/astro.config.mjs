@@ -1,7 +1,9 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
-//import starlightThemeNova from 'starlight-theme-nova';
+import starlightThemeNova from 'starlight-theme-nova';
+import { ion } from "starlight-ion-theme";
+import starlightThemeFlexoki from 'starlight-theme-flexoki'
 
 // https://astro.build/config
 export default defineConfig({
@@ -17,7 +19,7 @@ export default defineConfig({
 			],
 			social: [{ icon: 'external', label: '官网', href: 'https://www.sophgo.com/' }],
 			// plugins: [
-			// 	starlightThemeNova(/* options */), 
+			// 	starlightThemeNova(/* options */),
 			// ],
 			sidebar: [
 				{

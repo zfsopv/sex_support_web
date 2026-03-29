@@ -10,6 +10,26 @@ head:
       }
 ---
 
+<style>
+  .right-sidebar-container {
+    display: none !important;
+  }
+  .main-pane {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .sl-container {
+    max-width: 100% !important;
+  }
+  .sl-markdown-content {
+    max-width: 100% !important;
+  }
+</style>
+
 <script>
   // 禁止页面滚动
   document.body.style.overflow = 'hidden';
@@ -29,7 +49,7 @@ head:
 <style>
   .iframe-wrapper {
     width: 100%;
-    height: 85vh;
+    height: calc(100vh - 160px);
   }
 
   .iframe-wrapper iframe {
