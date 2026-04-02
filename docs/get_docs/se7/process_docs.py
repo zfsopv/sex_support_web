@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import glob
 import os
 import subprocess
 
@@ -70,16 +71,130 @@ def run_command(cmd, timeout=3600):
         raise Exception(f"命令执行失败: {cmd}")
     return result.stdout
 
-def find_all_rst_files(directory):
-    """递归查找所有RST文件"""
+def _walk_all_rst_files(directory):
+    """递归查找目录下所有 .rst 文件（无序）"""
     rst_files = []
     for root, dirs, files in os.walk(directory):
         for file in files:
             if file.endswith('.rst'):
                 rst_files.append(os.path.join(root, file))
-    # 按文件名排序
-    rst_files.sort()
     return rst_files
+
+
+def parse_toctree_blocks_from_index(content):
+    """
+    解析 index.rst 中所有 .. toctree:: 块（按出现顺序）。
+    返回 [(has_glob, [docname, ...]), ...]，docname 已去掉 .rst 后缀。
+    """
+    lines = content.splitlines()
+    blocks = []
+    i = 0
+    n = len(lines)
+    while i < n:
+        if lines[i].strip() != '.. toctree::':
+            i += 1
+            continue
+        has_glob = False
+        entries = []
+        i += 1
+        while i < n:
+            s = lines[i]
+            st = s.strip()
+            if st == '':
+                i += 1
+                continue
+            if st.startswith(':'):
+                if ':glob:' in st:
+                    has_glob = True
+                i += 1
+                continue
+            break
+        while i < n:
+            s = lines[i]
+            st = s.strip()
+            if st == '':
+                i += 1
+                continue
+            if not s or not s[0].isspace():
+                break
+            if st.startswith('..'):
+                break
+            docname = st.split('#')[0].strip()
+            if docname.endswith('.rst'):
+                docname = docname[:-4]
+            entries.append(docname)
+            i += 1
+        blocks.append((has_glob, entries))
+    return blocks
+
+
+def resolve_doc_entry_to_paths(base_dir, entry, has_glob):
+    """
+    将 toctree 条目解析为存在的 .rst 文件路径列表。
+    has_glob 为 True 时，对未直接解析的条目尝试 glob 扩展。
+    """
+    entry_clean = entry.strip()
+    if entry_clean.endswith('.rst'):
+        entry_clean = entry_clean[:-4]
+
+    if any(ch in entry for ch in '*?['):
+        pattern = os.path.join(base_dir, entry)
+        return sorted(glob.glob(pattern))
+
+    candidates = [
+        os.path.join(base_dir, entry_clean + '.rst'),
+        os.path.join(base_dir, entry_clean, 'index.rst'),
+    ]
+    for c in candidates:
+        if os.path.isfile(c):
+            return [c]
+
+    if has_glob:
+        # 显式列举但带 :glob: 时，仍按文件名尝试
+        g = sorted(glob.glob(os.path.join(base_dir, glob.escape(entry_clean) + '.rst')))
+        if g:
+            return g
+        g = sorted(glob.glob(os.path.join(base_dir, entry_clean + '*.rst')))
+        if g:
+            return g
+        g = sorted(glob.glob(os.path.join(base_dir, entry)))
+        if g:
+            return sorted(g)
+    return []
+
+
+def collect_rst_files_ordered(root_dir):
+    """
+    按 index.rst 中 toctree 顺序收集 .rst；未出现在 toctree 中的文件按相对路径排在末尾。
+    """
+    root_dir = os.path.abspath(root_dir)
+    all_paths = _walk_all_rst_files(root_dir)
+    all_set = set(os.path.abspath(p) for p in all_paths)
+
+    index_path = os.path.join(root_dir, 'index.rst')
+    if not os.path.isfile(index_path):
+        return sorted(all_paths, key=lambda p: os.path.relpath(p, root_dir))
+
+    content = read_rst_file(index_path)
+    blocks = parse_toctree_blocks_from_index(content)
+
+    ordered = []
+    seen = set()
+
+    for has_glob, entries in blocks:
+        for entry in entries:
+            for path in resolve_doc_entry_to_paths(root_dir, entry, has_glob):
+                ap = os.path.abspath(path)
+                if ap in all_set and ap not in seen:
+                    seen.add(ap)
+                    ordered.append(path)
+
+    orphans = sorted(
+        (p for p in all_paths if os.path.abspath(p) not in seen),
+        key=lambda p: os.path.relpath(p, root_dir).replace(os.sep, '/'),
+    )
+    ordered.extend(orphans)
+    return ordered
 
 def read_rst_file(filepath):
     """读取RST文件内容"""
@@ -130,21 +245,16 @@ def read_version_file():
         return {}
 
 def merge_rst_files(rst_files):
-    """合并多个RST文件，只合并内容超过100行的文件"""
+    """合并多个RST文件，只合并内容超过100行的文件；正文之间仅换行，不插入文件名等标记"""
     merged_content = []
     for rst_file in rst_files:
         content = read_rst_file(rst_file)
-        # 检查文件行数
         line_count = len(content.split('\n'))
         if line_count <= 100:
             continue
-        # 添加文件分隔符
-        filename = os.path.basename(rst_file)
-        merged_content.append(f"\n\n{'='*80}\n")
-        merged_content.append(f"文件: {filename}\n")
-        merged_content.append(f"{'='*80}\n\n")
+        if merged_content:
+            merged_content.append('\n\n')
         merged_content.append(content)
-        merged_content.append("\n\n")
     return ''.join(merged_content)
 
 def update_repo_to_commit(repo_path, commit):
@@ -263,7 +373,7 @@ def process_repo(repo_key, repo_config, versions):
                 print(f"警告: 路径不存在: {full_path}")
                 continue
             
-            rst_files = find_all_rst_files(full_path)
+            rst_files = collect_rst_files_ordered(full_path)
             if rst_files:
                 all_rst_files.extend(rst_files)
                 print(f"找到 {len(rst_files)} 个RST文件在: {rst_path}")
