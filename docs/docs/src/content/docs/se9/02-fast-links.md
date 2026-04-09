@@ -14,6 +14,10 @@ description: 快速导向资料的链接汇总
 * [SE9 16-EPC-20 产品页面](https://www.sophgo.com/sophon-u/product/introduce/se9-16-epc-20.html)
 * [SE9 16-EPC-A0 产品页面](https://www.sophgo.com/sophon-u/product/introduce/se16-epc-a0.html)
 
+## 产品使用手册
+
+* [微服务器SE9用户指导手册](https://sophon-file.sophon.cn/sophon-prod-s3/drive/25/05/16/09/%E7%AE%97%E8%83%BD%E6%99%BA%E8%83%BD%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%99%A8SE9%E7%94%A8%E6%88%B7%E6%8C%87%E5%AF%BC%E6%89%8B%E5%86%8C_20250512-v2.6.pdf)
+
 ## SDK文档
 
 * [SDK总页面（BM1688/CV186AH v2.1.0）](https://developer.sophgo.com/site/index/material/101/all.html)
